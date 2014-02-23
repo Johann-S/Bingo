@@ -7,6 +7,8 @@
     <string name="backMusic">Background music</string>
     <string name="nbDelay">Number delay :</string>
     <string name="tapDl">Tap to download</string>
+    <string name="chooseAvatar">Choose avatar</string>
+    <string name="changeAvatar">Change your avatar</string>
     <string name="saveSettings">Save</string>
     <string name="cancelSettings">Cancel</string>
 </resources>

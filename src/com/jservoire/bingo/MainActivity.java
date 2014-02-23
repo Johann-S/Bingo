@@ -1,5 +1,12 @@
 package com.jservoire.bingo;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -57,6 +64,11 @@ public class MainActivity extends FragmentActivity
 		prevList = (ListView)findViewById(R.id.listViewPrev);
 		prevList.setAdapter(new PrevGamesAdapter(this));
 		prevList.setOnItemClickListener(listListener);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
+	    super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
 	}
 
 	@Override

@@ -48,24 +48,23 @@
         android:layout_below="@+id/textView2"
         android:max="10" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/seekBarDelay"
-        android:layout_marginTop="53dp"
-        android:layout_toRightOf="@+id/textView2"
-        android:layout_marginBottom="20dp"
-        android:text="@string/tapDl" />
-
-    <ImageView
-        android:id="@+id/imageView1"
+    <Button
+        android:id="@+id/buttonAvatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/seekBarDelay"
         android:layout_below="@+id/seekBarDelay"
-        android:layout_marginTop="32dp"
-        android:src="@drawable/guest_icon_large"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginTop="20dp"
+        android:drawableLeft="@drawable/guest_icon_large"
+        android:text="@string/chooseAvatar" />
+
+    <TextView
+        android:id="@+id/textDlArchive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/buttonAvatar"
+        android:layout_below="@+id/buttonAvatar"
+        android:layout_marginTop="16dp"
+        android:text="@string/tapDl" />
 
 </RelativeLayout >
