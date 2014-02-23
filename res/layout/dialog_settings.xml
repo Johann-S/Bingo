@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ToggleButton
+        android:id="@+id/toggleMusic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="28dp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/toggleMusic"
+        android:layout_alignBottom="@+id/toggleMusic"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/toggleMusic"
+        android:text="@string/backMusic" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/toggleMusic"
+        android:layout_below="@+id/toggleMusic"
+        android:layout_marginTop="28dp"
+        android:text="@string/nbDelay" />
+
+    <TextView
+        android:id="@+id/textNbDelay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView2"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_centerHorizontal="true" />
+
+    <SeekBar
+        android:id="@+id/seekBarDelay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_below="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekBarDelay"
+        android:layout_marginTop="53dp"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_marginBottom="20dp"
+        android:text="@string/tapDl" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/seekBarDelay"
+        android:layout_below="@+id/seekBarDelay"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/guest_icon_large"
+        android:layout_marginBottom="20dp" />
+
+</RelativeLayout >
