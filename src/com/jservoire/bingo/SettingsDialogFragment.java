@@ -1,7 +1,13 @@
 package com.jservoire.bingo;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,9 +22,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -123,7 +129,10 @@ public class SettingsDialogFragment extends DialogFragment
 		{
 			hasAvatar = true;
 			btnAvatar.setText(getResources().getString(R.string.changeAvatar));
-			// TODO: Load avatar
+			Bitmap avatar = loadAvatar();
+			Drawable imgDraw = new BitmapDrawable(getResources(),avatar);
+			imgDraw.setBounds(0,0,100,100);
+			btnAvatar.setCompoundDrawables(imgDraw,null,null,null);
 		}
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -147,9 +156,13 @@ public class SettingsDialogFragment extends DialogFragment
 					try 
 					{
 						InputStream imageStream = getActivity().getContentResolver().openInputStream(selectedImage);
-						Drawable imgDraw = new BitmapDrawable(getResources(),imageStream);
+						Bitmap bmpImg = BitmapFactory.decodeStream(imageStream);
+						
+						Drawable imgDraw = new BitmapDrawable(getResources(),bmpImg);
 						imgDraw.setBounds(0,0,100,100);
 						btnAvatar.setCompoundDrawables(imgDraw,null,null,null);
+						
+						saveImage(bmpImg);
 					} 
 					catch (FileNotFoundException e) {
 						e.printStackTrace();
@@ -174,6 +187,34 @@ public class SettingsDialogFragment extends DialogFragment
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean("activMusic", musicEnable);
 		editor.putInt("delay", delay);
+		editor.putString("avatar", strAvatar);
 		editor.commit();
+	}
+	
+	private void saveImage(final Bitmap bmp)
+	{
+	    File savePath = new File(Environment.getExternalStorageDirectory()+"/Bingo/");
+        if ( !savePath.exists() && !savePath.isDirectory()) {
+        	savePath.mkdir();
+        }
+        
+	    if ( savePath != null )
+	    {
+	    	try 
+	    	{
+		        OutputStream out = new FileOutputStream(savePath.getPath()+"/avatar.jpg"); 
+		        strAvatar = savePath.getPath()+"/avatar.jpg";
+		        bmp.compress(Bitmap.CompressFormat.JPEG, 85, out);
+			} 
+	    	catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+	}
+	
+	private Bitmap loadAvatar()
+	{
+		File avatar = new File(Environment.getExternalStorageDirectory()+"/Bingo/avatar.jpg");
+		return BitmapFactory.decodeFile(avatar.getAbsolutePath());
 	}
 }
