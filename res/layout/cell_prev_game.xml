@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" android:id="@+id/cellPrevGame">  
-	<TextView android:id="@+id/dateGame"
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content">
-	</TextView>
-	<TextView android:id="@+id/daubedGame"
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content">
-	</TextView>
-</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+	android:id="@+id/cellPrevGame"
+	android:background="@drawable/history_cell_background">
+
+    <TextView
+        android:id="@+id/daubedGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/dateGame"
+        android:layout_below="@+id/dateGame"
+        android:text="Daubed" />
+
+    <TextView
+        android:id="@+id/dateGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="16dp"
+        android:text="Date" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/daubedGame"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:text="in progress" />
+
+</RelativeLayout>

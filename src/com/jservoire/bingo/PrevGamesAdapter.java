@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class PrevGamesAdapter extends BaseAdapter
@@ -56,14 +56,14 @@ public class PrevGamesAdapter extends BaseAdapter
 	@Override
 	public View getView(int index, View convertView, ViewGroup parent) 
 	{
-		LinearLayout cellItem;
+		RelativeLayout cellItem;
 		GamePlayed game = listGame.get(index);
 		
 		if (convertView == null) {
-			cellItem = (LinearLayout) mInflater.inflate(R.layout.cell_prev_game, parent, false);
+			cellItem = (RelativeLayout) mInflater.inflate(R.layout.cell_prev_game, parent, false);
 		}
 		else {
-			cellItem = (LinearLayout) convertView;
+			cellItem = (RelativeLayout) convertView;
 		}
 		
 		TextView dateText = (TextView)cellItem.findViewById(R.id.dateGame);

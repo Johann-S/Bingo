@@ -130,9 +130,12 @@ public class SettingsDialogFragment extends DialogFragment
 			hasAvatar = true;
 			btnAvatar.setText(getResources().getString(R.string.changeAvatar));
 			Bitmap avatar = loadAvatar();
-			Drawable imgDraw = new BitmapDrawable(getResources(),avatar);
-			imgDraw.setBounds(0,0,100,100);
-			btnAvatar.setCompoundDrawables(imgDraw,null,null,null);
+			if ( avatar != null )
+			{
+				Drawable imgDraw = new BitmapDrawable(getResources(),avatar);
+				imgDraw.setBounds(0,0,100,100);
+				btnAvatar.setCompoundDrawables(imgDraw,null,null,null);
+			}
 		}
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -215,6 +218,6 @@ public class SettingsDialogFragment extends DialogFragment
 	private Bitmap loadAvatar()
 	{
 		File avatar = new File(Environment.getExternalStorageDirectory()+"/Bingo/avatar.jpg");
-		return BitmapFactory.decodeFile(avatar.getAbsolutePath());
+		return ( avatar != null ) ? BitmapFactory.decodeFile(avatar.getAbsolutePath()) : null;
 	}
 }
