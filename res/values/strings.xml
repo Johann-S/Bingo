@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Bingo</string>
+    <string name="app_name">SERVOIRE_Bingo</string>
     <string name="action_settings">Settings</string>
     <string name="startGame">Start new game</string>
     <string name="prevGame">Previous game</string>
