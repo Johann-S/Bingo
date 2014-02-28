@@ -1,6 +1,7 @@
 package com.jservoire.bingo;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,6 +41,14 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 	}
 
 
+	private void createDirectory(final String dir,final String location) 
+	{ 
+		File newDir = new File(location + dir); 
+		if ( !newDir.isDirectory() ) { 
+			newDir.mkdirs(); 
+		} 
+	}
+
 	@Override
 	protected Boolean doInBackground(final String... params) 
 	{
@@ -54,7 +63,7 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 			connection.connect();
 
 			int lenghtOfFile = connection.getContentLength();
-			Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
+			Log.d("Download information", "Lenght of file: " + lenghtOfFile);
 
 			InputStream input = new BufferedInputStream(urlObj.openStream());
 			OutputStream output = new FileOutputStream(pathArchive);
@@ -71,7 +80,7 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 			output.flush();
 			output.close();
 			input.close();
-			//unZipArchive(pathArchive,path);
+			unZipArchive(pathArchive,path);
 		} 
 		catch (MalformedURLException e) {
 			Log.e("inputURL",e.getLocalizedMessage());
@@ -82,13 +91,13 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 		return Boolean.TRUE;
 	}
 
+
 	@Override
 	protected void onPostExecute(final Boolean result) 
 	{
-		notifBuilder.setContentText("Download complete").setProgress(0, 0, false);
+		notifBuilder.setContentText("Download and unzipping complete").setProgress(0, 0, false);
 		notifManager.notify(ID_NOTIF, notifBuilder.build());
 	}
-
 
 	@Override
 	public void onProgressUpdate(final Integer... tabProgress)
@@ -101,13 +110,29 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 	{
 		try 
 		{
+			notifBuilder.setContentText("Unzipping in progress...").setProgress(0, 0, true);
+			notifManager.notify(ID_NOTIF, notifBuilder.build());
 			FileInputStream inputZip = new FileInputStream(pathArchive);
 			ZipInputStream zipInput = new ZipInputStream(inputZip);
 			ZipEntry entryZip = null;
 
 			while ( (entryZip = zipInput.getNextEntry()) != null ) 
-			{ 
-				Log.d("Decompress", "Unzipping " + entryZip.getName());
+			{ 				
+				if ( !entryZip.isDirectory() )
+				{
+					Log.d("Decompress", "Unzipping " + entryZip.getName());
+					FileOutputStream fout = new FileOutputStream(path + entryZip.getName());
+					int buffer = 0;
+					while ( (buffer = zipInput.read()) != -1 ) {
+						fout.write(buffer); 
+					}
+
+					zipInput.closeEntry(); 
+					fout.close(); 
+				}
+				else {
+					createDirectory(entryZip.getName(), path);
+				}
 			}
 		} 
 		catch (FileNotFoundException e) {
@@ -116,5 +141,5 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 		catch (IOException e) {
 			Log.e("Error unzip",e.getLocalizedMessage());
 		}
-	}
+	} 
 }

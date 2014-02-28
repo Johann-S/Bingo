@@ -122,7 +122,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	{
 		File avatar = new File(Environment.getExternalStorageDirectory()
 				+ "/Bingo/avatar.jpg");
-		return (avatar != null) ? BitmapFactory.decodeFile(avatar
+		return ( avatar.exists() ) ? BitmapFactory.decodeFile(avatar
 				.getAbsolutePath()) : null;
 	}
 
@@ -196,10 +196,20 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 			hasAvatar = true;
 			btnAvatar.setText(getResources().getString(R.string.changeAvatar));
 			Bitmap avatar = loadAvatar();
-			if (avatar != null) {
-				Drawable imgDraw = new BitmapDrawable(getResources(), avatar);
-				imgDraw.setBounds(0, 0, 100, 100);
-				btnAvatar.setCompoundDrawables(imgDraw, null, null, null);
+			if (avatar != null) 
+			{
+				File fileAvatar = new File(strAvatar);
+				if ( fileAvatar.exists() )
+				{
+					Drawable imgDraw = new BitmapDrawable(getResources(), strAvatar);
+					imgDraw.setBounds(0, 0, 100, 100);
+					btnAvatar.setCompoundDrawables(imgDraw, null, null, null);
+				}
+				else 
+				{
+					strAvatar = null;
+					savePreferences();
+				}
 			}
 		}
 
