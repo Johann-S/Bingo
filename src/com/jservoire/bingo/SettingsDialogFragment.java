@@ -117,6 +117,8 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	private Boolean musicEnable;
 	private String pathAvatar;
 	private String pathZipAvatar;
+	private final static String PREF_FILE = "BingoPref";
+	SharedPreferences preferences;
 
 	private Bitmap loadAvatar() 
 	{
@@ -128,7 +130,6 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 
 	private void loadPreferences() 
 	{
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		musicEnable = preferences.getBoolean("activMusic", false);
 		delay = preferences.getInt("delay", 3);
 		strAvatar = preferences.getString("avatar", null);
@@ -168,6 +169,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	public Dialog onCreateDialog(final Bundle savedInstanceState) 
 	{
 		super.onCreateDialog(savedInstanceState);
+		preferences = getActivity().getSharedPreferences(PREF_FILE, Activity.MODE_PRIVATE);
 		LayoutInflater inflater = (LayoutInflater) getActivity()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View vDialog = inflater.inflate(R.layout.dialog_settings, null);
@@ -259,10 +261,8 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 		}
 	}
 
-	private void savePreferences() 
+	private void savePreferences()
 	{
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(getActivity());
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean("activMusic", musicEnable);
 		editor.putInt("delay", delay);
