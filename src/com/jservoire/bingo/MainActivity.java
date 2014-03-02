@@ -22,8 +22,8 @@ public class MainActivity extends FragmentActivity
 	{
 		@Override
 		public void onClick(final View v) {
-			// TODO Auto-generated method stub
-
+			Intent intent = new Intent(getBaseContext(), RoomActivity.class);
+			startActivity(intent);
 		}
 	};
 

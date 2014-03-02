@@ -14,9 +14,14 @@ import java.net.URLConnection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.island.android.game.bingo.utils.ZipUtils;
+
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 
 public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
@@ -80,7 +85,10 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 			output.flush();
 			output.close();
 			input.close();
-			unZipArchive(pathArchive,path);
+			notifBuilder.setContentText("Unzipping in progress...").setProgress(0, 0, true);
+			notifManager.notify(ID_NOTIF, notifBuilder.build());
+			ZipUtils.unZipFile(ctx, pathArchive, path);
+			//unZipArchive(pathArchive,path);
 		} 
 		catch (MalformedURLException e) {
 			Log.e("inputURL",e.getLocalizedMessage());
@@ -95,6 +103,7 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 	@Override
 	protected void onPostExecute(final Boolean result) 
 	{
+		ctx.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
 		notifBuilder.setContentText("Download and unzipping complete").setProgress(0, 0, false);
 		notifManager.notify(ID_NOTIF, notifBuilder.build());
 	}
@@ -106,12 +115,11 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 		notifManager.notify(ID_NOTIF, notifBuilder.build());
 	}
 
+	// TODO : Optimisation
 	private void unZipArchive(final String pathArchive,final String path)
 	{
 		try 
 		{
-			notifBuilder.setContentText("Unzipping in progress...").setProgress(0, 0, true);
-			notifManager.notify(ID_NOTIF, notifBuilder.build());
 			FileInputStream inputZip = new FileInputStream(pathArchive);
 			ZipInputStream zipInput = new ZipInputStream(inputZip);
 			ZipEntry entryZip = null;

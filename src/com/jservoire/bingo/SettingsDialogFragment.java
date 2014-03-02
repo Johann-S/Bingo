@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -144,7 +145,8 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 			if (resultCode == Activity.RESULT_OK) 
 			{
 				Uri selectedImage = imageReturnedIntent.getData();
-				try {
+				try 
+				{
 					InputStream imageStream = getActivity()
 							.getContentResolver()
 							.openInputStream(selectedImage);
@@ -156,8 +158,9 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 					btnAvatar.setCompoundDrawables(imgDraw, null, null, null);
 
 					saveImage(bmpImg);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+				} 
+				catch (FileNotFoundException e) {
+					Log.e("File not found",e.getLocalizedMessage());
 				}
 
 			}
