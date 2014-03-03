@@ -21,7 +21,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -118,7 +117,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	private Boolean musicEnable;
 	private String pathAvatar;
 	private String pathZipAvatar;
-	private final static String PREF_FILE = "BingoPref";
+	public final static String PREF_FILE = "BingoPref";
 	SharedPreferences preferences;
 
 	private Bitmap loadAvatar() 
