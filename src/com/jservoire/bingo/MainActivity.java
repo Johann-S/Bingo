@@ -1,5 +1,6 @@
 package com.jservoire.bingo;
 
+import Interfaces.PreferencesListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -13,7 +14,7 @@ import android.widget.Toast;
 
 import com.island.android.game.bingo.game.GamePlayed;
 
-public class MainActivity extends FragmentActivity 
+public class MainActivity extends FragmentActivity implements PreferencesListener
 {
 	private Button btnStart;
 	private Button btnSettings;
@@ -75,5 +76,11 @@ public class MainActivity extends FragmentActivity
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public void onPreferencesChanged() {
+		// TODO Auto-generated method stub
+
 	}
 }

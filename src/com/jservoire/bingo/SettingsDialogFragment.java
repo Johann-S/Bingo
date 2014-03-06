@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import Interfaces.PreferencesListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,7 +36,7 @@ import android.widget.ToggleButton;
 import com.island.android.game.bingo.utils.Constants;
 import com.island.android.game.bingo.utils.IAsyncListener;
 
-public class SettingsDialogFragment extends DialogFragment implements IAsyncListener 
+public class SettingsDialogFragment extends DialogFragment implements IAsyncListener
 {
 	public static SettingsDialogFragment newInstance() {
 		return new SettingsDialogFragment();
@@ -118,7 +119,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	private String pathAvatar;
 	private String pathZipAvatar;
 	public final static String PREF_FILE = "BingoPref";
-	SharedPreferences preferences;
+	private SharedPreferences preferences;
 
 	private Bitmap loadAvatar() 
 	{
@@ -171,7 +172,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	public Dialog onCreateDialog(final Bundle savedInstanceState) 
 	{
 		super.onCreateDialog(savedInstanceState);
-		preferences = getActivity().getSharedPreferences(PREF_FILE, Activity.MODE_PRIVATE);
+		preferences = getActivity().getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
 		LayoutInflater inflater = (LayoutInflater) getActivity()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View vDialog = inflater.inflate(R.layout.dialog_settings, null);
@@ -270,5 +271,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 		editor.putInt("delay", delay);
 		editor.putString("avatar", strAvatar);
 		editor.commit();
+		PreferencesListener listener = (PreferencesListener)getActivity();
+		listener.onPreferencesChanged();
 	}
 }
