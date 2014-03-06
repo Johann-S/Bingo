@@ -11,6 +11,8 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class RoomActivity extends FragmentActivity implements PreferencesListener
 {
@@ -77,7 +79,9 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	}
 
 	@Override
-	public void onPreferencesChanged() {
-		loadPreferences();
+	public void onPreferencesChanged()
+	{
+		loadPreferences();		
+		Crouton.makeText(this,getResources().getString(R.string.savePref),Style.CONFIRM).show();
 	}
 }

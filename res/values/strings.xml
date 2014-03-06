@@ -11,4 +11,5 @@
     <string name="changeAvatar">Change your avatar</string>
     <string name="saveSettings">Save</string>
     <string name="cancelSettings">Cancel</string>
+    <string name="savePref">Settings saved</string>
 </resources>

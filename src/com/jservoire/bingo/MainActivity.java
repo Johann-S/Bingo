@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import com.island.android.game.bingo.game.GamePlayed;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public class MainActivity extends FragmentActivity implements PreferencesListener
 {
 	private Button btnStart;
@@ -80,7 +83,6 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 
 	@Override
 	public void onPreferencesChanged() {
-		// TODO Auto-generated method stub
-
+		Crouton.makeText(this,getResources().getString(R.string.savePref),Style.CONFIRM).show();
 	}
 }
