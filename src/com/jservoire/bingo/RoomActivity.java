@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -61,23 +62,32 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		@Override
 		public void onItemClick(final AdapterView<?> arg0, final View cell, final int index,final long arg3) 
 		{
-			ImageView circleView = (ImageView)cell.findViewById(R.id.circleImgView);
-			int intVisi = ( circleView.getVisibility() == View.INVISIBLE ) ? View.VISIBLE:View.INVISIBLE;
-			circleView.setVisibility(intVisi);
-			//BingoApp.srv.notifyNumberDaubed(RoomActivity.this, value, daubed);
+			ImageView circleView = (ImageView)cell.findViewById(R.id.circleImgView);			
+			int intVisible = 0;
+			boolean isDaubed = false;
+			
+			if ( circleView.getVisibility() == View.INVISIBLE )
+			{
+				intVisible = View.VISIBLE;
+				isDaubed = true;
+			}
+			else {
+				intVisible = View.INVISIBLE;
+			}
+			
+			BingoApp.srv.notifyNumberDaubed(RoomActivity.this, adapter.getValueItem(index),isDaubed);
+			circleView.setVisibility(intVisible);
 		}
 	};
 
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return "01A";
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Johann";
 	}
 
 	private void loadPreferences()
@@ -97,9 +107,8 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	}
 
 	@Override
-	public void onClientVictory(final String arg0, final String arg1) {
-		// TODO Auto-generated method stub
-
+	public void onClientVictory(final String name, final String id) {
+		Crouton.makeText(this,"You Win "+name+" with id "+id,Style.CONFIRM).show();
 	}
 
 	@Override
@@ -114,8 +123,6 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		btnBingo = (Button)findViewById(R.id.btnBingo);
 		btnBingo.setOnClickListener(btnBingoListener);
 		gridView = (GridView)findViewById(R.id.gridView);
-		adapter = new GridAdapter(this);
-		gridView.setAdapter(adapter);
 		gridView.setOnItemClickListener(caseListener);
 		avatarImageView = (ImageView)findViewById(R.id.avatarImageView);
 		loadPreferences();
@@ -125,24 +132,28 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 
 		// New game
 		BingoApp.srv.notifyReadyForGame(this, 0);
+		BingoApp.srv.requestResumeCurrentGame(this,0);
 	}
 
 	@Override
-	public void onGamesPlayedList(final List<GamePlayed> arg0) {
-		// TODO Auto-generated method stub
-
+	public void onGamesPlayedList(final List<GamePlayed> listGame) {
+		Log.d("onGamesPlayedList", Integer.toString(listGame.size()));
 	}
 
 	@Override
-	public void onGameToPlayRestored(final GamePlayed arg0) {
-		// TODO Auto-generated method stub
-		// Call after notifyReadyForGame
+	public void onGameToPlayRestored(final GamePlayed nGame) 
+	{
+		adapter = new GridAdapter(this,nGame);
+		gridView.setAdapter(adapter);
 	}
 
 	@Override
-	public void onNewNumber(final int arg0) {
-		// TODO Auto-generated method stub
-
+	public void onNewNumber(final int indexMusic) 
+	{
+		if ( musicEnabled )
+		{
+			// TODO: Play music
+		}
 	}
 
 	@Override
@@ -154,13 +165,11 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 
 	@Override
 	public void onRoundOver() {
-		// TODO Auto-generated method stub
-
+		Log.d("onRoundOver","round over");
 	}
 
 	@Override
 	public void onWrongBingo() {
-		// TODO Auto-generated method stub
-
+		Crouton.makeText(this,getResources().getString(R.string.wrBingo),Style.ALERT).show();
 	}
 }

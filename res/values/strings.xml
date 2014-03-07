@@ -12,4 +12,5 @@
     <string name="saveSettings">Save</string>
     <string name="cancelSettings">Cancel</string>
     <string name="savePref">Settings saved</string>
+    <string name="wrBingo">Wrong bingo !</string>
 </resources>

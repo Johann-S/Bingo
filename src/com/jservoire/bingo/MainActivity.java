@@ -59,8 +59,7 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return "01A";
 	}
 
 	@Override

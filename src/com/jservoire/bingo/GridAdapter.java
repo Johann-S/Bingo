@@ -1,5 +1,7 @@
 package com.jservoire.bingo;
 
+import com.island.android.game.bingo.game.GamePlayed;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +13,15 @@ public class GridAdapter extends BaseAdapter
 {
 	private Context ctx;
 	private int[] tmpTab;
+	private GamePlayed game;
 	private LayoutInflater mInflater;
 
-	public GridAdapter(final Context _ctx)
+	public GridAdapter(final Context _ctx,GamePlayed _game)
 	{
 		ctx = _ctx;
+		game = _game;
 		mInflater = LayoutInflater.from(ctx);
-		tmpTab = new int[25];
-		for ( int i = 0; i < 25; i++ ) {
-			tmpTab[i] = i;
-		}
+		tmpTab = game.grid;
 	}
 
 	@Override
@@ -36,6 +37,10 @@ public class GridAdapter extends BaseAdapter
 	@Override
 	public long getItemId(final int index) {
 		return index;
+	}
+	
+	public int getValueItem(final int index) {
+		return tmpTab[index];
 	}
 
 	@Override
