@@ -1,5 +1,7 @@
 package com.jservoire.bingo;
 
+import java.util.List;
+
 import Interfaces.PreferencesListener;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,11 +15,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.island.android.game.bingo.game.GamePlayed;
+import com.island.android.game.bingo.game.interfaces.IStartClient;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class MainActivity extends FragmentActivity implements PreferencesListener
+public class MainActivity extends FragmentActivity implements PreferencesListener, IStartClient
 {
 	private Button btnStart;
 	private Button btnSettings;
@@ -55,6 +58,12 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 
 
 	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent imageReturnedIntent) { 
 		super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
 	}
@@ -73,12 +82,20 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 		prevList = (ListView)findViewById(R.id.listViewPrev);
 		prevList.setAdapter(new PrevGamesAdapter(this));
 		prevList.setOnItemClickListener(listListener);
+
+		BingoApp.srv.requestAllPlayedGames(this);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public void onGamesPlayedList(final List<GamePlayed> arg0) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override

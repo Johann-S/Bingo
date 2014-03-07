@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/avatarImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="18dp"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/btnSettings"
         android:layout_alignBottom="@+id/btnSettings"
-        android:layout_centerHorizontal="true"
+        android:layout_alignRight="@+id/btnBingo"
         android:drawableLeft="@drawable/btn_lobby" />
 
     <Button
@@ -37,7 +37,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
         android:drawableLeft="@drawable/bingo_btn" />
+
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="300dp"
+        android:layout_height="280dp"
+        android:layout_below="@+id/btnHome"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:stretchMode="columnWidth"
+        android:background="@drawable/big_bingo_panel"
+        android:paddingTop="27dp"
+        android:numColumns="5" >
+    </GridView>
 
 </RelativeLayout>
