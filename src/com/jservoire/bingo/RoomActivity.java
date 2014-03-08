@@ -5,6 +5,7 @@ import java.util.List;
 import Interfaces.PreferencesListener;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -167,8 +168,11 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	@Override
 	public void onNewNumber(final int indexMusic) 
 	{
-		String nameMusic = "ball_cal_"+Integer.toString(indexMusic)+".mp3";
-		// TODO: playSound 
+		String nameMusic = "ball_call_"+Integer.toString(indexMusic);
+		int idMusic = getResources().getIdentifier(nameMusic,"raw",getPackageName());
+		if ( idMusic > 0 ) {
+			playSound(idMusic);
+		}
 	}
 
 	@Override
