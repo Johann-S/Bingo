@@ -1,7 +1,7 @@
 package com.jservoire.bingo;
 
 import java.sql.Date;
-import java.util.ArrayList;
+import java.util.List;
 
 import com.island.android.game.bingo.game.GamePlayed;
 
@@ -16,26 +16,14 @@ import android.widget.TextView;
 public class PrevGamesAdapter extends BaseAdapter
 {
 	private Context ctx;
-	private ArrayList<GamePlayed> listGame;
+	private List<GamePlayed> listGame;
 	private LayoutInflater mInflater;
 	
-	public PrevGamesAdapter(Context actCtx)
+	public PrevGamesAdapter(Context actCtx,List<GamePlayed> _list)
 	{
 		ctx = actCtx;
-		listGame = new ArrayList<GamePlayed>();
+		listGame = _list;
 		mInflater = LayoutInflater.from(ctx);
-		
-		for ( int i = 0; i < 5; i++ ) 
-		{
-			java.util.Date today = new java.util.Date();
-			int[] daubed = {4,5,8,9,10};
-			int[] gridPlay = {85,45,69,25};
-			GamePlayed g = new GamePlayed(Integer.toString(i),new Date(today.getTime()));
-			g.durationSecond = (i*10);
-			g.numbersDaubed = daubed;
-			g.grid = gridPlay;
-			listGame.add(g);
-		}
 	}
 	
 	@Override
@@ -51,6 +39,19 @@ public class PrevGamesAdapter extends BaseAdapter
 	@Override
 	public long getItemId(int index) {
 		return index;
+	}
+	
+	private int nbDaubed(int[] tabDaubed)
+	{
+		int nb = 0;
+		int nbNumb = tabDaubed.length;
+		for ( int i = 0; i < nbNumb; i++ ) 
+		{
+			if ( tabDaubed[i] == 1 ) {
+				nb++;
+			}
+		}
+		return nb;
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class PrevGamesAdapter extends BaseAdapter
 		dateText.setText(game.when.toString());
 		
 		TextView daubedText = (TextView)cellItem.findViewById(R.id.daubedGame);
-		int nbDaubed = game.numbersDaubed.length;
+		int nbDaubed = nbDaubed(game.numbersDaubed);
 		daubedText.setText(Integer.toString(nbDaubed));
 		
 		return cellItem;

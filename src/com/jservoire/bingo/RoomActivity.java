@@ -123,8 +123,8 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	}
 
 	@Override
-	public void onClientVictory(final String name, final String id) {
-		Crouton.makeText(this,"You Win "+name+" with id "+id,Style.CONFIRM).show();
+	public void onClientVictory(final String id, final String name) {
+		Crouton.makeText(this,"You Win "+name,Style.CONFIRM).show();
 	}
 
 	@Override
@@ -143,6 +143,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		avatarImageView = (ImageView)findViewById(R.id.avatarImageView);
 		backgroundPlayer = MediaPlayer.create(this, R.raw.background_music);
 		loadPreferences();
+		playSound(R.raw.welcome);
 
 		// Begin play
 		BingoApp.srv.notifyRegistration(this);
@@ -150,7 +151,6 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		// New game
 		BingoApp.srv.notifyReadyForGame(this, 0);
 		BingoApp.srv.requestResumeCurrentGame(this,0);
-		playSound(R.raw.welcome);
 	}
 
 	@Override

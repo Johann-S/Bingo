@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -79,7 +80,6 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 		btnSettings.setOnClickListener(settingListener);
 
 		prevList = (ListView)findViewById(R.id.listViewPrev);
-		prevList.setAdapter(new PrevGamesAdapter(this));
 		prevList.setOnItemClickListener(listListener);
 
 		BingoApp.srv.requestAllPlayedGames(this);
@@ -92,9 +92,8 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 	}
 
 	@Override
-	public void onGamesPlayedList(final List<GamePlayed> arg0) {
-		// TODO Auto-generated method stub
-
+	public void onGamesPlayedList(final List<GamePlayed> listPlayed) {
+		prevList.setAdapter(new PrevGamesAdapter(this,listPlayed));
 	}
 
 	@Override
