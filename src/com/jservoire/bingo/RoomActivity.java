@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -33,13 +35,16 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	private boolean musicEnabled;
 	private int delay;
 	private GridAdapter adapter;
+	private MediaPlayer backgroundPlayer;
+	
 	private View.OnClickListener btnHomeListener = new View.OnClickListener() {
 
 		@Override
-		public void onClick(final View v) {
+		public void onClick(final View v){
 			finish();
 		}
 	};
+	
 	private View.OnClickListener btnSettingsListener = new View.OnClickListener() {
 
 		@Override
@@ -49,6 +54,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 			SettingsDialogFragment.newInstance().show(fm, "test");
 		}
 	};
+	
 	private View.OnClickListener btnBingoListener = new View.OnClickListener() {
 
 		@Override
@@ -77,6 +83,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 			
 			BingoApp.srv.notifyNumberDaubed(RoomActivity.this, adapter.getValueItem(index),isDaubed);
 			circleView.setVisibility(intVisible);
+			playSound(R.raw.daub);
 		}
 	};
 
@@ -101,7 +108,15 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 				avatarImageView.setImageDrawable(imgDraw);
 			}
 		}
+		
 		musicEnabled = preferences.getBoolean("activMusic",false);
+		if ( musicEnabled ) {
+			startBackgroundMusic();
+		}
+		else {
+			stopBackgroundMusic();
+		}
+		
 		delay = preferences.getInt("delay",3);
 		BingoApp.srv.setNumbersDelay(delay);
 	}
@@ -125,6 +140,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		gridView = (GridView)findViewById(R.id.gridView);
 		gridView.setOnItemClickListener(caseListener);
 		avatarImageView = (ImageView)findViewById(R.id.avatarImageView);
+		backgroundPlayer = MediaPlayer.create(this, R.raw.background_music);
 		loadPreferences();
 
 		// Begin play
@@ -133,6 +149,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		// New game
 		BingoApp.srv.notifyReadyForGame(this, 0);
 		BingoApp.srv.requestResumeCurrentGame(this,0);
+		playSound(R.raw.welcome);
 	}
 
 	@Override
@@ -150,10 +167,8 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	@Override
 	public void onNewNumber(final int indexMusic) 
 	{
-		if ( musicEnabled )
-		{
-			// TODO: Play music
-		}
+		String nameMusic = "ball_cal_"+Integer.toString(indexMusic)+".mp3";
+		// TODO: playSound 
 	}
 
 	@Override
@@ -165,11 +180,58 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 
 	@Override
 	public void onRoundOver() {
-		Log.d("onRoundOver","round over");
+		playSound(R.raw.round_over);
 	}
 
 	@Override
 	public void onWrongBingo() {
 		Crouton.makeText(this,getResources().getString(R.string.wrBingo),Style.ALERT).show();
+	}
+	
+	public void playSound(int idSound)
+	{
+		MediaPlayer mp = MediaPlayer.create(RoomActivity.this, idSound);
+        mp.setOnCompletionListener(new OnCompletionListener() 
+        {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+        });
+        
+        mp.start();
+	}
+	
+	public void startBackgroundMusic()
+	{
+	    backgroundPlayer.setLooping(true);
+	    backgroundPlayer.setVolume(100,100); 
+	    backgroundPlayer.start();
+	}
+	
+	public void stopBackgroundMusic() 
+	{
+		if ( backgroundPlayer.isPlaying() ) {
+			backgroundPlayer.pause();
+		}
+	}
+
+	@Override
+	protected void onResume() 
+	{
+		super.onResume();
+		if ( musicEnabled ) {
+			startBackgroundMusic();
+		}
+	}
+	
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		BingoApp.srv.notifyPauseCurrentGame(this);
+		if ( musicEnabled ){
+			stopBackgroundMusic();
+		}
 	}
 }
