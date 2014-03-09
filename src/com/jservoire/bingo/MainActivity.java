@@ -51,9 +51,9 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 		public void onItemClick(final AdapterView<?> arg0, final View arg1, final int index,final long arg3) 
 		{
 			GamePlayed game = (GamePlayed)prevList.getAdapter().getItem(index);
-			if ( game.durationSecond > 0 ) {
-				Toast.makeText(getBaseContext(), "Jeu : "+game.durationSecond, Toast.LENGTH_SHORT).show();
-			}
+			Intent intent = new Intent(getBaseContext(), RoomActivity.class);
+			intent.putExtra("when", game.when.getTime());
+			startActivity(intent);
 		}
 	};
 

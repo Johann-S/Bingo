@@ -4,6 +4,7 @@ import java.util.List;
 
 import Interfaces.PreferencesListener;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
@@ -144,13 +145,18 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		backgroundPlayer = MediaPlayer.create(this, R.raw.background_music);
 		loadPreferences();
 		playSound(R.raw.welcome);
-
+		
+		long dateRestor = 0;
+		if ( getIntent().hasExtra("when") ) {
+			dateRestor = getIntent().getLongExtra("when",0);
+		}
+	
 		// Begin play
 		BingoApp.srv.notifyRegistration(this);
-
-		// New game
-		BingoApp.srv.notifyReadyForGame(this, 0);
-		BingoApp.srv.requestResumeCurrentGame(this,0);
+		
+		// New or resume game
+		BingoApp.srv.notifyReadyForGame(this,dateRestor);
+		BingoApp.srv.requestResumeCurrentGame(this,dateRestor);
 	}
 
 	@Override
@@ -183,7 +189,10 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	}
 
 	@Override
-	public void onRoundOver() {
+	public void onRoundOver() 
+	{
+		BingoApp.srv.notifyPauseCurrentGame(this);
+		stopBackgroundMusic();
 		playSound(R.raw.round_over);
 	}
 

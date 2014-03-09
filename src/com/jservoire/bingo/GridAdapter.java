@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class GridAdapter extends BaseAdapter
@@ -48,6 +49,7 @@ public class GridAdapter extends BaseAdapter
 	{
 		View cell;
 		String valTxt = Integer.toString(tmpTab[index]);
+		
 
 		if (convertView == null) {
 			cell = mInflater.inflate(R.layout.cell_gridview, parent, false);
@@ -58,6 +60,16 @@ public class GridAdapter extends BaseAdapter
 
 		TextView cellVal = (TextView)cell.findViewById(R.id.txtCell);
 		cellVal.setText(valTxt);
+		
+		if ( tmpTab[index] > 0 )
+		{
+			boolean isDaubed = (game.numbersDaubed[index] == 1) ? true:false;
+			if ( isDaubed )
+			{
+				ImageView imgDaubed = (ImageView)cell.findViewById(R.id.circleImgView);
+				imgDaubed.setVisibility(View.VISIBLE);
+			}
+		}
 
 		return cell;
 	}
