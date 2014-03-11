@@ -7,13 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.island.android.game.bingo.game.GamePlayed;
 import com.island.android.game.bingo.game.interfaces.IStartClient;
@@ -30,6 +28,7 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 	{
 		@Override
 		public void onClick(final View v) {
+			// Start a new game
 			Intent intent = new Intent(getBaseContext(), RoomActivity.class);
 			startActivity(intent);
 		}
@@ -40,6 +39,7 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 		@Override
 		public void onClick(final View v) 
 		{
+			// show Settings dialog
 			FragmentManager fm = getSupportFragmentManager();
 			SettingsDialogFragment.newInstance().show(fm, "test");
 		}
@@ -50,6 +50,7 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 		@Override
 		public void onItemClick(final AdapterView<?> arg0, final View arg1, final int index,final long arg3) 
 		{
+			// Resume a game
 			GamePlayed game = (GamePlayed)prevList.getAdapter().getItem(index);
 			Intent intent = new Intent(getBaseContext(), RoomActivity.class);
 			intent.putExtra("when", game.when.getTime());
@@ -64,10 +65,14 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 	}
 
 	@Override
-	protected void onActivityResult(final int requestCode, final int resultCode, final Intent imageReturnedIntent) { 
+	protected void onActivityResult(final int requestCode, final int resultCode, final Intent imageReturnedIntent) {
+		// allow to notify SettingsDialogFragment on result
 		super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) 
 	{
@@ -82,6 +87,7 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 		prevList = (ListView)findViewById(R.id.listViewPrev);
 		prevList.setOnItemClickListener(listListener);
 
+		// Ask server to get all played games
 		BingoApp.srv.requestAllPlayedGames(this);
 	}
 
@@ -93,11 +99,13 @@ public class MainActivity extends FragmentActivity implements PreferencesListene
 
 	@Override
 	public void onGamesPlayedList(final List<GamePlayed> listPlayed) {
+		// Build list on receive games played
 		prevList.setAdapter(new PrevGamesAdapter(this,listPlayed));
 	}
 
 	@Override
 	public void onPreferencesChanged() {
+		// notify user, preferences had changed
 		Crouton.makeText(this,getResources().getString(R.string.savePref),Style.CONFIRM).show();
 	}
 }

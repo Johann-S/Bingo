@@ -16,10 +16,4 @@ public class BingoApp extends Application
 		db.initDAOs();
 		srv = new LocalBingoServer(BingoDatabaseHelper.serverDao, BingoDatabaseHelper.clientDao, BingoDatabaseHelper.gamePlayedDao);
 	}
-
-	@Override
-	public void onTerminate()
-	{
-
-	}
 }

@@ -14,8 +14,6 @@ import java.net.URLConnection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.island.android.game.bingo.utils.ZipUtils;
-
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -35,12 +33,14 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 	{
 		ctx = _ctx;
 
+		// Get Notification Builder
 		notifBuilder = new android.support.v4.app.NotificationCompat.Builder(ctx);
 		notifBuilder.setContentTitle("Archive Download")
 		.setContentText("Download in progress")
 		.setSmallIcon(R.drawable.icon58)
 		.setProgress(0, 0, true);
 
+		// Build Notification
 		notifManager = (NotificationManager)ctx.getSystemService("notification");
 		notifManager.notify(ID_NOTIF, notifBuilder.build());
 	}
@@ -73,22 +73,20 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 			InputStream input = new BufferedInputStream(urlObj.openStream());
 			OutputStream output = new FileOutputStream(pathArchive);
 
+			// Write data in the output stream
 			byte data[] = new byte[1024];
 			long total = 0;
 			while ( (count = input.read(data)) != -1 ) 
 			{
 				total += count;
-				publishProgress((int)((total*100)/lenghtOfFile));
+				publishProgress((int)((total*100)/lenghtOfFile)); // update notification progress bar
 				output.write(data, 0, count);
 			}
 
 			output.flush();
 			output.close();
 			input.close();
-			notifBuilder.setContentText("Unzipping in progress...").setProgress(0, 0, true);
-			notifManager.notify(ID_NOTIF, notifBuilder.build());
-			ZipUtils.unZipFile(ctx, pathArchive, path);
-			//unZipArchive(pathArchive,path);
+			unZipArchive(pathArchive,path);
 		} 
 		catch (MalformedURLException e) {
 			Log.e("inputURL",e.getLocalizedMessage());
@@ -115,11 +113,12 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 		notifManager.notify(ID_NOTIF, notifBuilder.build());
 	}
 
-	// TODO : Optimisation
 	private void unZipArchive(final String pathArchive,final String path)
 	{
 		try 
 		{
+			notifBuilder.setContentText("Unzipping in progress...").setProgress(0, 0, true);
+			notifManager.notify(ID_NOTIF, notifBuilder.build());
 			FileInputStream inputZip = new FileInputStream(pathArchive);
 			ZipInputStream zipInput = new ZipInputStream(inputZip);
 			ZipEntry entryZip = null;
@@ -130,9 +129,10 @@ public class DownloadAsyncTask extends AsyncTask<String,Integer,Boolean>
 				{
 					Log.d("Decompress", "Unzipping " + entryZip.getName());
 					FileOutputStream fout = new FileOutputStream(path + entryZip.getName());
-					int buffer = 0;
-					while ( (buffer = zipInput.read()) != -1 ) {
-						fout.write(buffer); 
+					byte[] buffer = new byte[1024];
+					int count;
+					while ( (count = zipInput.read(buffer)) != -1 ) {
+						fout.write(buffer,0,count); 
 					}
 
 					zipInput.closeEntry(); 

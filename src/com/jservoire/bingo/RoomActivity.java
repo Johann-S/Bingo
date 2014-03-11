@@ -4,9 +4,7 @@ import java.util.List;
 
 import Interfaces.PreferencesListener;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -43,6 +41,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 
 		@Override
 		public void onClick(final View v){
+			// Close RoomActivity and back to MainActivity
 			finish();
 		}
 	};
@@ -52,6 +51,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		@Override
 		public void onClick(final View v) 
 		{
+			// Show Settings Dialog
 			FragmentManager fm = getSupportFragmentManager();
 			SettingsDialogFragment.newInstance().show(fm, "test");
 		}
@@ -61,6 +61,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 
 		@Override
 		public void onClick(final View v) {
+			// Notify serveur when a user think he wins
 			BingoApp.srv.notifyBingo(RoomActivity.this);
 		}
 	};
@@ -133,6 +134,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_room);
+		playSound(R.raw.welcome);
 		btnHome = (Button)findViewById(R.id.btnHome);
 		btnHome.setOnClickListener(btnHomeListener);
 		btnSettings = (Button)findViewById(R.id.btnSettings);
@@ -144,7 +146,6 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		avatarImageView = (ImageView)findViewById(R.id.avatarImageView);
 		backgroundPlayer = MediaPlayer.create(this, R.raw.background_music);
 		loadPreferences();
-		playSound(R.raw.welcome);
 		
 		long dateRestor = 0;
 		if ( getIntent().hasExtra("when") ) {
@@ -167,6 +168,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	@Override
 	public void onGameToPlayRestored(final GamePlayed nGame) 
 	{
+		// Build game grid
 		adapter = new GridAdapter(this,nGame);
 		gridView.setAdapter(adapter);
 	}
@@ -174,6 +176,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	@Override
 	public void onNewNumber(final int indexMusic) 
 	{
+		// Play sound on receive new number
 		String nameMusic = "ball_call_"+Integer.toString(indexMusic);
 		int idMusic = getResources().getIdentifier(nameMusic,"raw",getPackageName());
 		if ( idMusic > 0 ) {
@@ -191,6 +194,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	@Override
 	public void onRoundOver() 
 	{
+		// When the game is over
 		BingoApp.srv.notifyPauseCurrentGame(this);
 		stopBackgroundMusic();
 		playSound(R.raw.round_over);

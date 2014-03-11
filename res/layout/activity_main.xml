@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="19dp"
+        android:background="@drawable/rounded_gradient_blue"
         android:text="@string/startGame" />
 
     <Button
@@ -23,6 +24,7 @@
         android:layout_alignLeft="@+id/btnStartGame"
         android:layout_below="@+id/btnStartGame"
         android:layout_marginTop="19dp"
+        android:background="@drawable/rounded_gradient_blue"
         android:text="@string/action_settings" />
 
     <TextView

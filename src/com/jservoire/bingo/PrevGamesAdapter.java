@@ -1,6 +1,5 @@
 package com.jservoire.bingo;
 
-import java.sql.Date;
 import java.util.List;
 
 import com.island.android.game.bingo.game.GamePlayed;

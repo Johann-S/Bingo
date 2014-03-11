@@ -30,11 +30,13 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.island.android.game.bingo.utils.Constants;
 import com.island.android.game.bingo.utils.IAsyncListener;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class SettingsDialogFragment extends DialogFragment implements IAsyncListener
 {
@@ -54,8 +56,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	{
 		@Override
 		public void onClick(final DialogInterface dialog, final int which) {
-			// TODO Auto-generated method stub
-
+			Log.d("close dialog","on close SettingsDialogFragment");
 		}
 	};
 
@@ -63,8 +64,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	private CompoundButton.OnCheckedChangeListener eventActMusic = new CompoundButton.OnCheckedChangeListener() 
 	{
 		@Override
-		public void onCheckedChanged(final CompoundButton buttonView,
-				final boolean isChecked) {
+		public void onCheckedChanged(final CompoundButton buttonView,final boolean isChecked) {
 			musicEnable = isChecked;
 		}
 	};
@@ -73,8 +73,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	private SeekBar.OnSeekBarChangeListener listenerSeekBar = new SeekBar.OnSeekBarChangeListener() 
 	{
 		@Override
-		public void onProgressChanged(final SeekBar seekBar,
-				final int progress, final boolean fromUser) {
+		public void onProgressChanged(final SeekBar seekBar,final int progress, final boolean fromUser) {
 			textDelay.setText(Integer.toString(progress));
 		}
 
@@ -85,6 +84,9 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 		@Override
 		public void onStopTrackingTouch(final SeekBar seekBar) {
 			delay = seekBar.getProgress();
+			if ( delay < 3 ) {
+				delay = 3;
+			}
 		}
 	};
 
@@ -97,14 +99,14 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 			File zipFile = new File(pathZipAvatar);
 			if ( zipFile.isFile() )
 			{
+				// Start Gallery to choose an avatar
 				Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
 				photoPickerIntent.setType("image/*");
 				startActivityForResult(photoPickerIntent, 0);
 			}
 			else
 			{
-				//DownloadUnzipProgressAsyncTask dl = new DownloadUnzipProgressAsyncTask(getActivity(),SettingsDialogFragment.this,R.drawable.icon58);
-				//dl.execute(Constants.AVATAR_DOWNLOAD_URL,pathZipAvatar,pathAvatar);
+				// Download avatar archive
 				DownloadAsyncTask dl = new DownloadAsyncTask(getActivity());
 				dl.execute(Constants.AVATAR_DOWNLOAD_URL,pathZipAvatar,pathAvatar);
 			}
@@ -114,7 +116,6 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	private TextView textDelay;
 	private int delay;
 	private String strAvatar;
-	private Boolean hasAvatar;
 	private Boolean musicEnable;
 	private String pathAvatar;
 	private String pathZipAvatar;
@@ -173,6 +174,8 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 	{
 		super.onCreateDialog(savedInstanceState);
 		preferences = getActivity().getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+		
+		// Inflate layout dialog
 		LayoutInflater inflater = (LayoutInflater) getActivity()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View vDialog = inflater.inflate(R.layout.dialog_settings, null);
@@ -193,12 +196,14 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 		textDelay.setText(Integer.toString(delay));
 
 		pathAvatar = Environment.getExternalStorageDirectory()+ "/Bingo/";
+		File filePathAvatar = new File(pathAvatar);
+		if (!filePathAvatar.exists() && !filePathAvatar.isDirectory()) {
+			filePathAvatar.mkdir();
+		}
 		pathZipAvatar = pathAvatar+ "archive.zip";
-		hasAvatar = false;
 		btnAvatar.setText(getResources().getString(R.string.chooseAvatar));
 		if ( strAvatar != null && strAvatar.length() > 0 ) 
 		{
-			hasAvatar = true;
 			btnAvatar.setText(getResources().getString(R.string.changeAvatar));
 			Bitmap avatar = loadAvatar();
 			if (avatar != null) 
@@ -218,6 +223,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 			}
 		}
 
+		// Build dialog
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setView(vDialog);
 		builder.setTitle(getResources().getString(R.string.action_settings));
@@ -232,7 +238,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 
 	@Override
 	public void onError(final Object arg0) {
-		Toast.makeText(getActivity(), "Une erreur est survenue !",Toast.LENGTH_SHORT).show();
+		Crouton.makeText(getActivity(), getResources().getString(R.string.errSavePref), Style.ALERT);
 	}
 
 	@Override
@@ -251,6 +257,7 @@ public class SettingsDialogFragment extends DialogFragment implements IAsyncList
 			savePath.mkdir();
 		}
 
+		// Save avatar
 		if ( savePath != null ) 
 		{
 			try {
