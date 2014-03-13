@@ -43,6 +43,10 @@ public class GridAdapter extends BaseAdapter
 	public int getValueItem(final int index) {
 		return tmpTab[index];
 	}
+	
+	public void clear() {
+		tmpTab = new int[25];
+	}
 
 	@Override
 	public View getView(final int index, final View convertView, final ViewGroup parent)  

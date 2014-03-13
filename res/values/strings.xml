@@ -14,4 +14,5 @@
     <string name="savePref">Settings saved</string>
     <string name="wrBingo">Wrong bingo !</string>
     <string name="errSavePref">An error happened</string>
+    <string name="playAgain">Play again !</string>
 </resources>

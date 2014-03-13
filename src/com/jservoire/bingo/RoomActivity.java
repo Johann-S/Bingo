@@ -30,6 +30,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	private Button btnHome;
 	private Button btnSettings;
 	private Button btnBingo;
+	private Button btnPlayAgain;
 	private ImageView avatarImageView;
 	private GridView gridView;
 	private boolean musicEnabled;
@@ -60,9 +61,29 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	private View.OnClickListener btnBingoListener = new View.OnClickListener() {
 
 		@Override
-		public void onClick(final View v) {
+		public void onClick(final View v) {		
+			playSound(R.raw.bingo);
+			
 			// Notify serveur when a user think he wins
 			BingoApp.srv.notifyBingo(RoomActivity.this);
+		}
+	};
+	
+	private View.OnClickListener btnPlayAgainListener = new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View v) 
+		{
+			btnPlayAgain.setVisibility(View.INVISIBLE);
+			gridView.setAdapter(null);
+			
+			// Begin play
+			BingoApp.srv.notifyRegistration(RoomActivity.this);
+			
+			// New game
+			BingoApp.srv.notifyReadyForGame(RoomActivity.this,0);
+			BingoApp.srv.requestResumeCurrentGame(RoomActivity.this,0);
+			
 		}
 	};
 
@@ -127,6 +148,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	@Override
 	public void onClientVictory(final String id, final String name) {
 		Crouton.makeText(this,"You Win "+name,Style.CONFIRM).show();
+		btnPlayAgain.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -141,6 +163,8 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		btnSettings.setOnClickListener(btnSettingsListener);
 		btnBingo = (Button)findViewById(R.id.btnBingo);
 		btnBingo.setOnClickListener(btnBingoListener);
+		btnPlayAgain = (Button)findViewById(R.id.btnAgain);
+		btnPlayAgain.setOnClickListener(btnPlayAgainListener);
 		gridView = (GridView)findViewById(R.id.gridView);
 		gridView.setOnItemClickListener(caseListener);
 		avatarImageView = (ImageView)findViewById(R.id.avatarImageView);
@@ -198,6 +222,7 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		BingoApp.srv.notifyPauseCurrentGame(this);
 		stopBackgroundMusic();
 		playSound(R.raw.round_over);
+		btnPlayAgain.setVisibility(View.VISIBLE);
 	}
 
 	@Override
