@@ -3,6 +3,7 @@ package com.jservoire.bingo;
 import java.util.List;
 
 import Interfaces.PreferencesListener;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
@@ -10,12 +11,15 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.Chronometer.OnChronometerTickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -30,13 +34,15 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	private Button btnHome;
 	private Button btnSettings;
 	private Button btnBingo;
-	private Button btnPlayAgain;
 	private ImageView avatarImageView;
 	private GridView gridView;
 	private boolean musicEnabled;
 	private int delay;
 	private GridAdapter adapter;
 	private MediaPlayer backgroundPlayer;
+	private Chronometer chronometer;
+	private int time = 0;
+	private Dialog dialogChrono;
 	
 	private View.OnClickListener btnHomeListener = new View.OnClickListener() {
 
@@ -68,24 +74,6 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 			BingoApp.srv.notifyBingo(RoomActivity.this);
 		}
 	};
-	
-	private View.OnClickListener btnPlayAgainListener = new View.OnClickListener() {
-		
-		@Override
-		public void onClick(View v) 
-		{
-			btnPlayAgain.setVisibility(View.INVISIBLE);
-			gridView.setAdapter(null);
-			
-			// Begin play
-			BingoApp.srv.notifyRegistration(RoomActivity.this);
-			
-			// New game
-			BingoApp.srv.notifyReadyForGame(RoomActivity.this,0);
-			BingoApp.srv.requestResumeCurrentGame(RoomActivity.this,0);
-			
-		}
-	};
 
 	private GridView.OnItemClickListener caseListener = new GridView.OnItemClickListener() 
 	{
@@ -110,6 +98,33 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 			playSound(R.raw.daub);
 		}
 	};
+	
+	public void buildChronometer()
+	{
+		View modal = getLayoutInflater().inflate(R.layout.dialog_chronometer, null);
+		chronometer = (Chronometer)modal.findViewById(R.id.chronometer);
+		chronometer.setBase(SystemClock.elapsedRealtime());
+		time = 0;
+		chronometer.setOnChronometerTickListener(new OnChronometerTickListener() {
+			
+			@Override
+			public void onChronometerTick(Chronometer mChronometer) 
+			{
+				if ( time >= 5 ) {
+					mChronometer.stop();
+					dialogChrono.dismiss();
+					startGame();
+				}
+				time++;
+			}
+		});
+		
+		dialogChrono = new Dialog(this);
+		dialogChrono.setContentView(modal);
+		dialogChrono.setTitle(getResources().getString(R.string.strReady));		
+		dialogChrono.show();
+		chronometer.start();
+	}
 
 	@Override
 	public String getId() {
@@ -148,7 +163,6 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 	@Override
 	public void onClientVictory(final String id, final String name) {
 		Crouton.makeText(this,"You Win "+name,Style.CONFIRM).show();
-		btnPlayAgain.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -163,25 +177,12 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		btnSettings.setOnClickListener(btnSettingsListener);
 		btnBingo = (Button)findViewById(R.id.btnBingo);
 		btnBingo.setOnClickListener(btnBingoListener);
-		btnPlayAgain = (Button)findViewById(R.id.btnAgain);
-		btnPlayAgain.setOnClickListener(btnPlayAgainListener);
 		gridView = (GridView)findViewById(R.id.gridView);
 		gridView.setOnItemClickListener(caseListener);
 		avatarImageView = (ImageView)findViewById(R.id.avatarImageView);
 		backgroundPlayer = MediaPlayer.create(this, R.raw.background_music);
 		loadPreferences();
-		
-		long dateRestor = 0;
-		if ( getIntent().hasExtra("when") ) {
-			dateRestor = getIntent().getLongExtra("when",0);
-		}
-	
-		// Begin play
-		BingoApp.srv.notifyRegistration(this);
-		
-		// New or resume game
-		BingoApp.srv.notifyReadyForGame(this,dateRestor);
-		BingoApp.srv.requestResumeCurrentGame(this,dateRestor);
+		buildChronometer();
 	}
 
 	@Override
@@ -222,7 +223,6 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		BingoApp.srv.notifyPauseCurrentGame(this);
 		stopBackgroundMusic();
 		playSound(R.raw.round_over);
-		btnPlayAgain.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -256,6 +256,21 @@ public class RoomActivity extends FragmentActivity implements PreferencesListene
 		if ( backgroundPlayer.isPlaying() ) {
 			backgroundPlayer.pause();
 		}
+	}
+	
+	public void startGame()
+	{
+		long dateRestor = 0;
+		if ( getIntent().hasExtra("when") ) {
+			dateRestor = getIntent().getLongExtra("when",0);
+		}
+		
+		// Begin play
+		BingoApp.srv.notifyRegistration(this);
+		
+		// New or resume game
+		BingoApp.srv.notifyReadyForGame(this,dateRestor);
+		BingoApp.srv.requestResumeCurrentGame(this,dateRestor);		
 	}
 
 	@Override
